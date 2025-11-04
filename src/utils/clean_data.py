@@ -2,15 +2,13 @@ import pandas as pd
 import os
 
 # --- Configuration des chemins ---
-# Définir le chemin de base du projet (là où se trouve .git)
-# Ce script est dans src/utils, donc on remonte de deux niveaux
+# Définir le chemin de base du projet 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RAW_DATA_PATH = os.path.join(BASE_DIR, 'data', 'raw', 'accidentsVelo-full.csv')
 CLEANED_DATA_PATH = os.path.join(BASE_DIR, 'data', 'cleaned', 'accidents_cleaned.csv')
 
 # --- Colonnes à conserver ---
 # On ne garde que ce qui est utile pour le dashboard
-# (identifiant, date, geo, et variables pour les graphiques/filtres)
 COLUMNS_TO_KEEP = [
     'Num_Acc',  # Identifiant unique
     'date',     # Pour le filtre temporel
