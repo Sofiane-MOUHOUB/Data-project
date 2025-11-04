@@ -1,52 +1,44 @@
-import requests
 import os
 
 # --- Configuration des chemins ---
 
-# On garde le lien de l'API, même s'il est capricieux.
-# L'important est de montrer quel lien on a essayé d'utiliser.
-DATA_URL = "https://opendata.koumoul.com/api/v2/datasets/accidents-velos/exports/csv?limit=-1&use_labels=true&timezone=Europe/Berlin"
-
-# On utilise le chemin absolu (3 niveaux plus haut)
+# On calcule le chemin absolu de la racine du projet
+# (On est dans src/utils/, donc on remonte de 3 niveaux)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-SAVE_DIR = os.path.join(BASE_DIR, 'data', 'raw')
-SAVE_PATH = os.path.join(SAVE_DIR, 'accidentsVelo-full.csv')
+
+# On définit le chemin complet où le fichier DEVRAIT être
+SAVE_PATH = os.path.join(BASE_DIR, 'data', 'raw', 'accidentsVelo-full.csv')
+
+# Lien de la page source, pour l'information
+DATA_SOURCE_PAGE = "https://opendata.koumoul.com/datasets/accidents-velos"
 
 
-def get_data():
+def check_data_file():
     """
-    Télécharge les données si elles ne sont pas déjà présentes localement.
+    Vérifie la présence du fichier de données brutes 'accidentsVelo-full.csv'.
+    
+    Si le fichier est présent, le script se termine avec succès.
+    Si le fichier est manquant, affiche un message d'erreur clair.
     """
     
-    # --- LA PARTIE IMPORTANTE ---
-    # 1. Vérifier si le fichier existe DÉJÀ.
+    # On vérifie si le fichier existe à l'endroit attendu
     if os.path.exists(SAVE_PATH):
-        print(f"Le fichier '{SAVE_PATH}' existe déjà.")
-        print("Saut du téléchargement.")
-        return  # On quitte la fonction
+        print(f"OK: Le fichier de données brutes est bien présent à : {SAVE_PATH}")
+        return
     
-    # 2. Si le fichier n'existe pas, on tente le téléchargement
-    print(f"Fichier non trouvé. Tentative de téléchargement depuis {DATA_URL}...")
-    
-    try:
-        response = requests.get(DATA_URL, stream=True)
-        response.raise_for_status() # Plante si erreur (404, 500...)
+    # Si le script arrive ici, c'est que le fichier est manquant
+    print("=" * 50)
+    print("ERREUR: Fichier de données brutes manquant.")
+    print(f"Le fichier 'accidentsVelo-full.csv' n'a pas été trouvé dans le dossier 'data/raw/'.")
+    print("\nAction requise :")
+    print(f"1. Téléchargez le fichier manuellement depuis : {DATA_SOURCE_PAGE}")
+    print(f"2. Placez-le dans le dossier : {os.path.join(BASE_DIR, 'data', 'raw')}")
+    print("=" * 50)
+    # On quitte le script avec un code d'erreur
+    exit(1)
 
-        os.makedirs(SAVE_DIR, exist_ok=True) # Crée le dossier s'il n'existe pas
-
-        print(f"Sauvegarde en cours dans {SAVE_PATH}...")
-        with open(SAVE_PATH, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192): 
-                f.write(chunk)
-        
-        print("\n--- Téléchargement terminé avec succès! ---")
-
-    except requests.exceptions.RequestException as e:
-        print(f"ERREUR: Le téléchargement a échoué.")
-        print(f"Raison : {e}")
-        print("\nIMPORTANT: Veuillez télécharger le fichier manuellement depuis")
-        print("https://opendata.koumoul.com/datasets/accidents-velos")
-        print(f"et le placer dans le dossier 'data/raw/' sous le nom 'accidentsVelo-full.csv'")
 
 if __name__ == "__main__":
-    get_data()
+    # Permet de lancer ce script directement avec:
+    # python src/utils/get_data.py
+    check_data_file()
