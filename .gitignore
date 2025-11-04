@@ -1,0 +1,57 @@
+# === ENVIRONNEMENT PYTHON ===
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# === FICHIERS TEMPORAIRES / CACHE ===
+*.log
+*.tmp
+*.bak
+*.swp
+*.lock
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# === ENVIRONNEMENTS / CONFIG ===
+.env
+*.env
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# Tests / typage / couverture
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
+htmlcov/
+
+# === DATA ===
+# On ignore les dossiers de données (y compris sous-dossiers)
+data/raw/
+data/cleaned/
+
+# Garder les fichiers CSV nécessaires à l’exécution locale
+!data/raw/accidentsVelo-full.csv
+!data/cleaned/cleaneddata.csv
+
+# === DASH / PLOTLY ===
+*.json
+*.html
+
+# === AUTRES ===
+video.mp4
+images/*
+!images/README_preview.png  # garde une image pour le README si besoin
+
+# === BACKUP ET DIVERS ===
+*.zip
+*.tar
+*.gz
+*.rar
