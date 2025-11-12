@@ -1,6 +1,8 @@
 """
 Définition des callbacks de l'application Dash.
-...
+
+Ce module importe l'objet `app` et le DataFrame `df` depuis `app.py`
+et définit les fonctions qui rendent le dashboard interactif.
 """
 
 import plotly.express as px
@@ -27,7 +29,13 @@ pd.options.mode.chained_assignment = None
 def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, Any, Any]:
     """
     Met à jour tous les graphiques dynamiques et KPIs en fonction de l'année sélectionnée.
-    ...
+    
+    Args:
+        selected_year (int): L'année choisie via le slider.
+    
+    Returns:
+        Tuple[str, str, str, Any, Any, Any, Any]: Un tuple contenant les 7 sorties
+        (3 KPIs textuels et 4 figures Plotly).
     """
     print(f"Mise à jour pour l'année : {selected_year}")
     
@@ -52,39 +60,37 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
 
     # 5. Création des graphiques dynamiques
     
-    # --- GRAPHIQUE 1 : CARTE CORRIGÉE ---
-    # On utilise density_mapbox pour avoir un fond de carte
+    # Graphique 1 : Heatmap (Carte de chaleur)
     fig_map = px.density_mapbox(
         df_sample, lat="lat", lon="long", 
         radius=8,
         title=f"Points chauds des accidents ({selected_year})",
         zoom=5, center={"lat": 46.603354, "lon": 1.888334},
-        color_continuous_scale="OrRd",   # Échelle Orange -> Rouge
-        mapbox_style="carto-positron"  # FOND DE CARTE GRIS CLAIR
+        color_continuous_scale="OrRd", 
+        mapbox_style="carto-positron" # Fond de carte gris clair
     )
     fig_map.update_layout(
         margin={"r":0,"t":40,"l":0,"b":0},
         coloraxis_colorbar_title_text="Densité"
     )
 
-    # Graphique 2 : Histogramme par Heure
-    hour_labels = [f"{h:02d}:00" for h in range(24)]
-    df_filtered['hour_label'] = df_filtered['hour'].apply(lambda h: f"{int(h):02d}:00")
-    
+    # Graphique 2 : Histogramme par Heure (Livrable obligatoire)
+    # Utilise la colonne numérique 'hour' avec 24 "bacs"
     fig_hour = px.histogram(
         df_filtered, 
-        x='hour_label',
-        title="Par Heure",
-        category_orders={'hour_label': hour_labels} 
+        x='hour',    
+        nbins=24,    
+        title="Répartition des accidents par heure"
     )
     fig_hour.update_layout(
-        xaxis_title="Heure de la journée",
+        xaxis_title="Heure de la journée (0-23h)",
         yaxis_title="Nombre d'accidents",
         showlegend=False,
         bargap=0.1
     )
     
     # Graphique 3 : Camembert (Gravité)
+    # Trié pour un ordre logique
     order_grav = ['Tué', 'Blessé Grave (Hospitalisé)', 'Blessé Léger', 'Indemne', 'Non défini']
     fig_grav = px.pie(
         df_filtered, 
