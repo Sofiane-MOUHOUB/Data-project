@@ -54,7 +54,7 @@ app.layout = html.Div(children=[
             html.H4(id='kpi-total-accidents') # ID pour le callback
         ]),
         html.Div(className='four columns', style=kpi_box_style, children=[
-            html.H3("Tués (sur l'année)"),
+            html.H3("Morts (sur l'année)"),
             html.H4(id='kpi-total-killed') # ID pour le callback
         ]),
         html.Div(className='four columns', style=kpi_box_style, children=[

@@ -1,18 +1,18 @@
 """
 Définition des callbacks de l'application Dash.
-
-Ce module importe l'objet `app` et le DataFrame `df` depuis `app.py`
-et définit les fonctions qui rendent le dashboard interactif.
+...
 """
 
 import plotly.express as px
 from dash.dependencies import Input, Output
-from src.dashboard.app import app, df # On importe app et df
+from src.dashboard.app import app, df 
 from typing import Tuple, Any
 import pandas as pd
 
-# Correction pour le SettingWithCopyWarning
-pd.options.mode.chained_assignment = None # 'warn' ou 'raise'
+# Désactive l'avertissement SettingWithCopyWarning de Pandas,
+# qui peut se produire lors de la création de la colonne `hour_label`
+# sur une tranche de DataFrame (df_filtered).
+pd.options.mode.chained_assignment = None
 
 @app.callback(
     [Output('kpi-total-accidents', 'children'),
@@ -27,20 +27,14 @@ pd.options.mode.chained_assignment = None # 'warn' ou 'raise'
 def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, Any, Any]:
     """
     Met à jour tous les graphiques dynamiques et KPIs en fonction de l'année sélectionnée.
-    
-    Args:
-        selected_year (int): L'année choisie via le slider.
-    
-    Returns:
-        Tuple[str, str, str, Any, Any, Any, Any]: Un tuple contenant les 7 sorties
-        (3 KPIs textuels et 4 figures Plotly).
+    ...
     """
     print(f"Mise à jour pour l'année : {selected_year}")
     
-    # 1. Filtrer les données
+    # 1. Filtrer les données pour l'année sélectionnée
     df_filtered = df[df['year'] == selected_year]
     
-    # 2. Gérer le cas où il n'y a pas de données
+    # 2. Gérer le cas où il n'y a pas de données pour cette année
     if df_filtered.empty:
         empty_fig = {'layout': {'title': 'Pas de données pour cette année'}}
         return "0", "0", "0", empty_fig, empty_fig, empty_fig, empty_fig
@@ -58,13 +52,20 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
 
     # 5. Création des graphiques dynamiques
     
-    # Graphique 1 : Heatmap
-    fig_map = px.density_map(
-        df_sample, lat="lat", lon="long", radius=10,
-        title=f"Zones de chaleur ({selected_year})",
-        zoom=5, center={"lat": 46.603354, "lon": 1.888334}
+    # --- GRAPHIQUE 1 : CARTE CORRIGÉE ---
+    # On utilise density_mapbox pour avoir un fond de carte
+    fig_map = px.density_mapbox(
+        df_sample, lat="lat", lon="long", 
+        radius=8,
+        title=f"Points chauds des accidents ({selected_year})",
+        zoom=5, center={"lat": 46.603354, "lon": 1.888334},
+        color_continuous_scale="OrRd",   # Échelle Orange -> Rouge
+        mapbox_style="carto-positron"  # FOND DE CARTE GRIS CLAIR
     )
-    fig_map.update_layout(margin={"r":0,"t":40,"l":0,"b":0})
+    fig_map.update_layout(
+        margin={"r":0,"t":40,"l":0,"b":0},
+        coloraxis_colorbar_title_text="Densité"
+    )
 
     # Graphique 2 : Histogramme par Heure
     hour_labels = [f"{h:02d}:00" for h in range(24)]
@@ -74,7 +75,7 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
         df_filtered, 
         x='hour_label',
         title="Par Heure",
-        category_orders={'hour_label': hour_labels} # Force l'ordre 00:00 -> 23:00
+        category_orders={'hour_label': hour_labels} 
     )
     fig_hour.update_layout(
         xaxis_title="Heure de la journée",
@@ -104,7 +105,7 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
     fig_lum.update_traces(textposition='inside', textinfo='percent+label')
     
     # 6. Renvoyer toutes les valeurs (dans le bon ordre)
-    return (f"{total_accidents:,}", # Format avec séparateur de milliers
+    return (f"{total_accidents:,}",
             f"{total_killed:,}", 
             f"{total_serious:,}", 
             fig_map, 
