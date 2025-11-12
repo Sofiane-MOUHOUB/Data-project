@@ -63,7 +63,7 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
     fig_map = px.density_mapbox(
         df_sample, lat="lat", lon="long", 
         radius=8,
-        title=f"Répartition des accidents ({selected_year})",
+        title=f"Points chauds des accidents ({selected_year})",
         zoom=5, center={"lat": 46.603354, "lon": 1.888334},
         color_continuous_scale="OrRd", 
         mapbox_style="carto-positron" 
@@ -81,7 +81,7 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
         df_filtered_larrout, 
         x='larrout',
         nbins=40,
-        title="Distribution par Largeur de Route (m)"
+        title="Distribution par Largeur de Chaussée (m)"
     )
     fig_larrout_hist.update_layout(
         xaxis_title="Largeur de la route (en mètres)",
