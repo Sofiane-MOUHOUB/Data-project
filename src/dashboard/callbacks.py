@@ -12,8 +12,7 @@ from typing import Tuple, Any
 import pandas as pd
 
 # Désactive l'avertissement SettingWithCopyWarning de Pandas,
-# qui peut se produire lors de la création de la colonne `hour_label`
-# sur une tranche de DataFrame (df_filtered).
+# qui pourrait autrement se produire lors de filtrages successifs.
 pd.options.mode.chained_assignment = None
 
 @app.callback(
@@ -21,7 +20,7 @@ pd.options.mode.chained_assignment = None
      Output('kpi-total-killed', 'children'),
      Output('kpi-total-serious', 'children'),
      Output('heatmap-graph', 'figure'),
-     Output('hist-hour-graph', 'figure'),
+     Output('hist-larrout-graph', 'figure'),
      Output('hist-grav-graph', 'figure'),
      Output('hist-lum-graph', 'figure')],
     [Input('year-slider', 'value')]
@@ -64,38 +63,39 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
     fig_map = px.density_mapbox(
         df_sample, lat="lat", lon="long", 
         radius=8,
-        title=f"Points chauds des accidents ({selected_year})",
+        title=f"Répartition des accidents ({selected_year})",
         zoom=5, center={"lat": 46.603354, "lon": 1.888334},
         color_continuous_scale="OrRd", 
-        mapbox_style="carto-positron" # Fond de carte gris clair
+        mapbox_style="carto-positron" 
     )
     fig_map.update_layout(
         margin={"r":0,"t":40,"l":0,"b":0},
         coloraxis_colorbar_title_text="Densité"
     )
 
-    # Graphique 2 : Histogramme par Heure (Livrable obligatoire)
-    # Utilise la colonne numérique 'hour' avec 24 "bacs"
-    fig_hour = px.histogram(
-        df_filtered, 
-        x='hour',    
-        nbins=24,    
-        title="Répartition des accidents par heure"
+    # Graphique 2 : Vrai Histogramme (Largeur de route)
+    # Filtre les valeurs extrêmes (>20m) pour une meilleure lisibilité
+    df_filtered_larrout = df_filtered[df_filtered['larrout'] < 20]
+    
+    fig_larrout_hist = px.histogram(
+        df_filtered_larrout, 
+        x='larrout',
+        nbins=40,
+        title="Distribution par Largeur de Route (m)"
     )
-    fig_hour.update_layout(
-        xaxis_title="Heure de la journée (0-23h)",
+    fig_larrout_hist.update_layout(
+        xaxis_title="Largeur de la route (en mètres)",
         yaxis_title="Nombre d'accidents",
         showlegend=False,
         bargap=0.1
     )
     
     # Graphique 3 : Camembert (Gravité)
-    # Trié pour un ordre logique
     order_grav = ['Tué', 'Blessé Grave (Hospitalisé)', 'Blessé Léger', 'Indemne', 'Non défini']
     fig_grav = px.pie(
         df_filtered, 
         names='grav_label', 
-        title="Par Gravité", 
+        title="Gravité des accidents", 
         category_orders={'grav_label': order_grav} 
     )
     fig_grav.update_traces(textposition='inside', textinfo='percent+label')
@@ -105,7 +105,7 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
     fig_lum = px.pie(
         df_filtered, 
         names='lum_label', 
-        title="Par Luminosité", 
+        title="Luminosité lors des accidents", 
         category_orders={'lum_label': order_lum}
     )
     fig_lum.update_traces(textposition='inside', textinfo='percent+label')
@@ -115,6 +115,6 @@ def update_dynamic_graphs(selected_year: int) -> Tuple[str, str, str, Any, Any, 
             f"{total_killed:,}", 
             f"{total_serious:,}", 
             fig_map, 
-            fig_hour, 
+            fig_larrout_hist,
             fig_grav, 
             fig_lum)

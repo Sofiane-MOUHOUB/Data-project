@@ -1,100 +1,101 @@
+"""
+Script de nettoyage des données brutes.
+
+Ce script lit le fichier CSV brut 'accidentsVelo-full.csv', 
+sélectionne les colonnes pertinentes, nettoie les données 
+(types, valeurs manquantes) et sauvegarde le résultat 
+dans 'data/cleaned/accidents_cleaned.csv'.
+"""
+
 import pandas as pd
 import os
+from typing import List
 
-# --- Configuration des chemins ---
-# Définir le chemin de base du projet 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# --- Configuration ---
+
+# Chemins absolus pour la robustesse
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 RAW_DATA_PATH = os.path.join(BASE_DIR, 'data', 'raw', 'accidentsVelo-full.csv')
 CLEANED_DATA_PATH = os.path.join(BASE_DIR, 'data', 'cleaned', 'accidents_cleaned.csv')
 
-# --- Colonnes à conserver ---
-# On ne garde que ce qui est utile pour le dashboard
-COLUMNS_TO_KEEP = [
-    'Num_Acc',  # Identifiant unique
-    'date',     # Pour le filtre temporel
-    'lat',      # Obligatoire pour la carte
-    'long',     # Obligatoire pour la carte
-    'age',      # Obligatoire pour l'histogramme
-    'grav',     # Gravité (pour filtres/couleurs)
-    'sexe',     # Sexe (pour filtres)
-    'atm',      # Conditions atmosphériques (pour filtres)
-    'lum',      # Luminosité (pour filtres)
-    'dep',       # Département (pour filtres)
-    'hrmn'
+# Colonnes à extraire du fichier CSV brut
+COLUMNS_TO_KEEP: List[str] = [
+    'Num_Acc',  
+    'date',     
+    'hrmn',     
+    'lat',      
+    'long',     
+    'age',      
+    'grav',     
+    'sexe',     
+    'atm',      
+    'lum',      
+    'dep',
+    'larrout'   # Largeur de la route (pour l'histogramme)
 ]
 
 def clean_data():
     """
-    Script principal pour nettoyer les données brutes des accidents de vélo.
-    1. Lit les données brutes.
-    2. Sélectionne les colonnes pertinentes.
-    3. Nettoie et convertit les types de données (dates, nombres).
-    4. Supprime les lignes avec des données critiques manquantes (geo, age).
-    5. Sauvegarde le fichier nettoyé dans data/cleaned/.
+    Fonction principale de nettoyage et de transformation des données.
     """
     print(f"Début du nettoyage... Lecture de {RAW_DATA_PATH}")
-
-    # 1. Lire les données brutes
-    # low_memory=False évite les avertissements sur les types mixtes
 
     try:
         df = pd.read_csv(RAW_DATA_PATH, sep=',', low_memory=False)
     except FileNotFoundError:
         print(f"ERREUR: Fichier non trouvé à {RAW_DATA_PATH}")
-        print("Veuillez d'abord placer 'accidentsVelo-full.csv' dans le dossier 'data/raw/'.")
+        print("Veuillez d'abord exécuter le script de récupération des données.")
         return
     except Exception as e:
         print(f"Une erreur est survenue lors de la lecture du CSV : {e}")
         return
 
-    # 2. Sélectionner les colonnes pertinentes
-    # On fait une copie pour éviter les avertissements (SettingWithCopyWarning)
+    # 1. Sélection des colonnes
     df_cleaned = df[COLUMNS_TO_KEEP].copy()
 
-    # 3. Nettoyer et convertir les types de données
+    # 2. Nettoyage et conversion des types
     
-    # --- Date ---
-    # Convertit la colonne 'date' en objet datetime. 
-    # errors='coerce' transforme les dates invalides en 'NaT' (Not a Time)
     df_cleaned['date'] = pd.to_datetime(df_cleaned['date'], errors='coerce')
-
-    # --- Coordonnées Géographiques (lat, long) ---
-    # Convertit en numérique. errors='coerce' transforme ce qui n'est pas un nombre en 'NaN'
     df_cleaned['lat'] = pd.to_numeric(df_cleaned['lat'], errors='coerce')
     df_cleaned['long'] = pd.to_numeric(df_cleaned['long'], errors='coerce')
-
+    
+    # Extraction de l'heure (0-23) depuis le format 'HH:MM'
     df_cleaned['hour'] = pd.to_datetime(df_cleaned['hrmn'], format='%H:%M', errors='coerce').dt.hour
+    
+    # Nettoyage de 'larrout' (Largeur de route)
+    # Conversion en numérique, en gérant les virgules décimales (ex: '6,5')
+    df_cleaned['larrout'] = pd.to_numeric(
+        df_cleaned['larrout'].astype(str).str.replace(',', '.'), 
+        errors='coerce'
+    )
+
+    # Suppression de la colonne 'hrmn' originale, maintenant inutile
     df_cleaned = df_cleaned.drop(columns=['hrmn'])
 
-    # 4. Supprimer les lignes avec des données critiques manquantes
-    
-    # On supprime les lignes où la date, la lat/long ou l'âge sont manquants.
-    # Un accident sans ces infos est inutile pour nos graphiques.
+    # 3. Suppression des lignes avec données invalides ou manquantes
     initial_rows = len(df_cleaned)
-    df_cleaned = df_cleaned.dropna(subset=['date', 'lat', 'long', 'age','hour'])
     
-    # On supprime les coordonnées (0, 0) qui sont des valeurs "nulles" fréquentes
+    # Définition des colonnes critiques pour l'analyse
+    critical_columns = ['date', 'lat', 'long', 'age', 'hour', 'larrout']
+    df_cleaned = df_cleaned.dropna(subset=critical_columns)
+    
+    # Suppression des aberrations géographiques (points à 0,0)
     df_cleaned = df_cleaned[df_cleaned['lat'] != 0]
+    
+    # Suppression des largeurs de route "0" (considérées comme données manquantes)
+    df_cleaned = df_cleaned[df_cleaned['larrout'] > 0]
     
     print(f"Suppression de {initial_rows - len(df_cleaned)} lignes avec données manquantes ou invalides.")
 
-    # 5. Conversion finale des types
-    
-    # Maintenant que les 'NaN' sont partis, on peut convertir l'âge en entier
+    # 4. Conversion finale des types
     df_cleaned['age'] = df_cleaned['age'].astype(int)
     df_cleaned['hour'] = df_cleaned['hour'].astype(int)
 
-    # 6. Sauvegarder le fichier nettoyé
-    
-    # Assurer que le dossier 'data/cleaned' existe
+    # 5. Sauvegarde du fichier nettoyé
     os.makedirs(os.path.dirname(CLEANED_DATA_PATH), exist_ok=True)
-    
-    # index=False est crucial pour ne pas ajouter une colonne d'index inutile dans le CSV
     df_cleaned.to_csv(CLEANED_DATA_PATH, index=False, encoding='utf-8')
     
     print(f"Nettoyage terminé. Fichier sauvegardé dans {CLEANED_DATA_PATH}")
-    print(f"Total des accidents conservés : {len(df_cleaned)}")
 
 if __name__ == "__main__":
-    # Permet de lancer ce script directement avec "python src/utils/clean_data.py"
     clean_data()

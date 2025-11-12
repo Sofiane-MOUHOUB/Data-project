@@ -6,10 +6,7 @@ Ce module importe l'objet `app` et les figures statiques depuis
 """
 
 from dash import dcc, html
-# On importe les variables nécessaires depuis notre module app.py
 from src.dashboard.app import app, fig_total_par_an, df 
-
-# --- Définition du Layout ---
 
 # Style CSS pour les boîtes des indicateurs clés (KPIs)
 kpi_box_style = {
@@ -17,7 +14,7 @@ kpi_box_style = {
     'padding': '10px', 
     'textAlign': 'center', 
     'borderRadius': '5px',
-    'backgroundColor': '#f9f9f9'
+    'backgroundColor': '#f9f9ff' # Fond légèrement bleuté
 }
 
 # Assigne la structure HTML à la propriété 'layout' de l'app
@@ -29,26 +26,25 @@ app.layout = html.Div(children=[
     html.Div(className='row', style={'marginBottom': '20px'}, children=[
         dcc.Graph(
             id='static-bar-chart-year',
-            figure=fig_total_par_an # Figure statique créée dans app.py
+            figure=fig_total_par_an 
         )
     ]),
 
     # --- 2. Panneau de Contrôle (Filtres) ---
     html.Div([
-        html.Hr(), # Ligne de séparation visuelle
-        html.Label('Sélectionner une année pour filtrer tous les graphiques ci-dessous :'),
+        html.Hr(), 
+        html.Label('Sélectionner une année pour filtrer les graphiques ci-dessous :'),
         dcc.Slider(
             id='year-slider',
             min=df['year'].min(),
             max=df['year'].max(),
-            value=df['year'].max(), # Valeur par défaut
+            value=df['year'].max(), 
             marks={str(year): str(year) for year in df['year'].unique()},
-            step=None # Empêche de sélectionner des "demi-années"
+            step=None 
         ),
     ], style={'padding': '20px'}),
 
     # --- 3. KPIs (Indicateurs clés dynamiques) ---
-    # Ces Divs seront remplies par le callback
     html.Div(className='row', style={'marginBottom': '20px'}, children=[
         html.Div(className='four columns', style=kpi_box_style, children=[
             html.H3("Total Accidents (sur l'année)"),
@@ -65,7 +61,6 @@ app.layout = html.Div(children=[
     ]),
 
     # --- 4. Zone des Graphiques Dynamiques ---
-    # Ces Divs seront remplies par le callback
     html.Div(className='row', children=[
         
         # Colonne de Gauche (Heatmap)
@@ -76,13 +71,15 @@ app.layout = html.Div(children=[
         # Colonne de Droite (Onglets)
         html.Div(className='five columns', children=[
             dcc.Tabs(id="tabs", children=[
-                dcc.Tab(label='Par Heure', children=[
-                    dcc.Graph(id='hist-hour-graph') 
+                
+                dcc.Tab(label='Largeur Route (Histo)', children=[
+                    dcc.Graph(id='hist-larrout-graph') 
                 ]),
-                dcc.Tab(label='Par Gravité', children=[
+                
+                dcc.Tab(label='Gravité des accidents', children=[
                     dcc.Graph(id='hist-grav-graph') 
                 ]),
-                dcc.Tab(label='Par Luminosité', children=[
+                dcc.Tab(label='Luminosité lors des accidents', children=[
                     dcc.Graph(id='hist-lum-graph') 
                 ]),
             ])
