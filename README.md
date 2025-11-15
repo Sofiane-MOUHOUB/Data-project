@@ -85,7 +85,7 @@ F(src/utils/clean_data.py) -- Génère --> E
 F -- Lit --> G(data/raw/accidentsVelo-full.csv)
 
 
-Rapport d'analyse
+### Rapport d'analyse
 Ce dashboard a permis d'extraire plusieurs conclusions clés sur les accidents de vélo en France (période 2010-2023).
 
 1. Avertissement sur les données (2018-2019)
