@@ -113,3 +113,11 @@ L'utilisation du fichier external_stylesheets = ['https://codepen.io/chriddyp/pe
 Le token Mapbox (pk.eyJ1...) est le token public et gratuit fourni par Plotly dans sa documentation officielle pour permettre l'affichage des fonds de carte (density_mapbox).
 
 Toute ligne non déclarée ci-dessus est réputée être produite par les auteurs du projet.
+
+### 3.2. Ajouter un nouveau graphique
+
+Pour ajouter un nouveau graphique :
+
+1.  Définissez la fonction du graphique (ex: `fig_distribution_age()`) dans un nouveau fichier ou dans un fichier existant si c'est pertinent.
+2.  Importez le graphique dans `src/dashboard/layout.py` et insérez-le dans la structure visuelle (par exemple, dans un `html.Div`).
+3.  Si le graphique doit être interactif, définissez ses *callbacks* dans `src/dashboard/callbacks.py`.
