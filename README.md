@@ -71,19 +71,18 @@ Le point d'entrée est `main.py`, qui se contente d'importer et de lancer l'appl
 * `src/utils/` : Contient les scripts pour la vérification (`get_data.py`) et le nettoyage (`clean_data.py`) des données. Le script de nettoyage est crucial car il convertit les codes (ex: `grav = 1.0`) en labels lisibles (ex: "Indemne") et prépare la variable `larrout` pour l'histogramme.
 
 ### Diagramme d'architecture (Mermaid)
-
 ```mermaid
 graph TD
-    A[main.py] --> B(src/dashboard/app.py)
-    A --> C(src/dashboard/layout.py)
-    A --> D(src/dashboard/callbacks.py)
-    
-    C -- Importe app, fig_total --> B
-    D -- Importe app, df --> B
-    
-    B -- Charge --> E(data/cleaned/accidents_cleaned.csv)
-    F(src/utils/clean_data.py) -- Génère --> E
-    F -- Lit --> G(data/raw/accidentsVelo-full.csv)
+A[main.py] --> B(src/dashboard/app.py)
+A --> C(src/dashboard/layout.py)
+A --> D(src/dashboard/callbacks.py)
+
+C -- Importe app, fig_total --> B
+D -- Importe app, df --> B
+
+B -- Charge --> E(data/cleaned/accidents_cleaned.csv) 
+F(src/utils/clean_data.py) -- Génère --> E
+F -- Lit --> G(data/raw/accidentsVelo-full.csv)
 
 
 Rapport d'analyse
@@ -113,11 +112,3 @@ L'utilisation du fichier external_stylesheets = ['https://codepen.io/chriddyp/pe
 Le token Mapbox (pk.eyJ1...) est le token public et gratuit fourni par Plotly dans sa documentation officielle pour permettre l'affichage des fonds de carte (density_mapbox).
 
 Toute ligne non déclarée ci-dessus est réputée être produite par les auteurs du projet.
-
-### 3.2. Ajouter un nouveau graphique
-
-Pour ajouter un nouveau graphique :
-
-1.  Définissez la fonction du graphique (ex: `fig_distribution_age()`) dans un nouveau fichier ou dans un fichier existant si c'est pertinent.
-2.  Importez le graphique dans `src/dashboard/layout.py` et insérez-le dans la structure visuelle (par exemple, dans un `html.Div`).
-3.  Si le graphique doit être interactif, définissez ses *callbacks* dans `src/dashboard/callbacks.py`.
