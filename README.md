@@ -1,10 +1,10 @@
-# 🚴 Dashboard d'Analyse des Accidents de Vélo en France
+# Dashboard d'Analyse des Accidents de Vélo en France
 
-Ce projet propose un dashboard interactif pour l'analyse des accidents de vélo en France, basé sur les données ouvertes (Open Data) de 2005 à 2023.
+Ce projet propose un dashboard interactif pour l'analyse des accidents de vélo en France, basé sur les données ouvertes (Open Data).
 
-L'application est construite en Python en utilisant Dash et Plotly. Elle permet de visualiser l'évolution globale des accidents, puis de filtrer par année pour explorer les points chauds géographiques, la distribution des accidents par largeur de route, leur gravité et la luminosité ambiante.
+L'application est construite en Python en utilisant Dash et Plotly. Elle permet de visualiser l'évolution globale des accidents (depuis 2010), puis de filtrer par année pour explorer les points chauds géographiques, la distribution des accidents par largeur de route, leur gravité et la luminosité ambiante.
 
-## 🚀 User Guide
+## User Guide
 
 Ce guide décrit les étapes pour déployer et lancer l'application dashboard sur une autre machine.
 
@@ -19,7 +19,7 @@ Ce guide décrit les étapes pour déployer et lancer l'application dashboard su
 1.  **Cloner le dépôt :**
     Ouvrez un terminal et clonez le dépôt du projet.
     ```bash
-    git clone https://github.com/Sofiane-MOUHOUB/Data-project.git
+    git clone [https://github.com/Sofiane-MOUHOUB/Data-project.git](https://github.com/Sofiane-MOUHOUB/Data-project.git)
     cd Data-project
     ```
 
@@ -46,7 +46,7 @@ Ce guide décrit les étapes pour déployer et lancer l'application dashboard su
 
 ---
 
-## 📊 Data
+## Data
 
 Le jeu de données utilisé pour ce projet est **"Accidents de Vélo"** (2005-2023).
 
@@ -56,7 +56,7 @@ Il est accessible en Open Data et est maintenu sur la plateforme Koumoul. Le fic
 
 ---
 
-## 💻 Developer Guide
+## Developer Guide
 
 L'application suit une structure modulaire pour séparer les responsabilités (logique applicative, layout, et interactivité), conformément aux bonnes pratiques de Dash.
 
@@ -69,44 +69,32 @@ Le point d'entrée est `main.py`, qui se contente d'importer et de lancer l'appl
 * `src/dashboard/callbacks.py` : Contient toute la logique interactive. Il définit la fonction `@app.callback` qui met à jour tous les graphiques dynamiques et les KPIs en fonction de l'entrée du `dcc.Slider`.
 * `src/utils/` : Contient les scripts pour la vérification (`get_data.py`) et le nettoyage (`clean_data.py`) des données. Le script de nettoyage est crucial car il convertit les codes (ex: `grav = 1.0`) en labels lisibles (ex: "Indemne") et prépare la variable `larrout` pour l'histogramme.
 
-### Diagramme d'architecture (Mermaid)
+---
 
-```mermaid
-graph TD
-    A[main.py] --> B(src/dashboard/app.py)
-    A --> C(src/dashboard/layout.py)
-    A --> D(src/dashboard/callbacks.py)
-    
-    C -- Importe app, fig_total --> B
-    D -- Importe app, df --> B
-    
-    B -- Charge --> E(data/cleaned/accidents_cleaned.csv)
-    F(src/utils/clean_data.py) -- Génère --> E
-    F -- Lit --> G(data/raw/accidentsVelo-full.csv)
-📈 Rapport d'analyse
-Ce dashboard a permis d'extraire plusieurs conclusions clés sur les accidents de vélo en France (période 2010-2023).
+## Rapport d'analyse
+Ce dashboard a permis d'extraire plusieurs conclusions clés sur les accidents de vélo en France (période 2010-2023).Ce dashboard a permis d'extraire plusieurs conclusions clés sur les accidents de vélo en France.
 
-1. Avertissement sur les données (2018-2019)
-L'analyse de l'évolution annuelle (graphique en ligne) montre une chute drastique des accidents en 2018 et 2019. Il ne s'agit pas d'une baisse réelle, mais d'un artefact de données. Pour satisfaire le livrable de l'histogramme (une variable numérique continue), nous avons utilisé la variable larrout (largeur de route). Les données sources pour cette variable sont massivement manquantes pour ces deux années, ce qui a entraîné la suppression de ces observations lors du nettoyage (dropna()).
+### 1. Avertissement sur les données (2018-2019)
+L'analyse de l'évolution annuelle (graphique en ligne) montre une chute drastique des accidents en 2018 et 2019. Il ne s'agit pas d'une baisse réelle, mais d'un artefact de données. Pour satisfaire le livrable de l'histogramme (une variable numérique continue), nous avons utilisé la variable larrout (largeur de route). Les données sources pour cette variable sont massivement manquantes pour ces deux années, ce qui a entraîné la suppression de ces observations lors du nettoyage (dropna()).L'analyse de l'évolution annuelle (graphique en ligne) montre une chute drastique des accidents en 2018 et 2019. Il ne s'agit pas d'une baisse réelle, mais d'un artefact de données. Pour satisfaire le livrable de l'histogramme (une variable numérique continue), nous avons utilisé la variable larrout (largeur de route). Les données sources pour cette variable sont massivement manquantes pour les années 2018-2019, ce qui a entraîné la suppression de ces observations lors du nettoyage (dropna()).
 
-2. Points chauds géographiques (Heatmap)
+### 2. Points chauds géographiques (Heatmap)
 La carte de chaleur (density_mapbox) montre que la densité d'accidents est la plus forte dans les zones urbaines denses. Un point chaud particulièrement visible se situe sur Paris intra-muros, ainsi que dans les autres grandes métropoles (Lyon, Marseille, Bordeaux).
 
-3. Analyse de la largeur de route (Histogramme)
+### 3. Analyse de la largeur de route (Histogramme)
 L'histogramme (variable larrout) montre une distribution claire : la grande majorité des accidents se produit sur des routes d'une largeur "standard" (entre 3 et 7 mètres), ce qui correspond aux routes départementales, communales ou aux rues urbaines.
 
-4. Gravité et Luminosité (Treemaps)
+### 4. Gravité et Luminosité (Treemaps)
 L'analyse des proportions (via les Treemaps) révèle deux faits majeurs :
 
-Gravité : La très grande majorité des accidents n'entraîne heureusement que des "Blessés Légers". Les "Tués" (environ 1-2%) et "Blessés Graves" (environ 15-20%) représentent une part minoritaire mais très sérieuse des incidents.
+* **Gravité :** La très grande majorité des accidents n'entraîne heureusement que des "Blessés Légers". Les "Tués" (environ 1-2%) et "Blessés Graves" (environ 15-20%) représentent une part minoritaire mais très sérieuse des incidents.
+* **Luminosité :** Contrairement à une idée reçue, la majorité écrasante des accidents a lieu en "Plein jour", ce qui est logiquement corrélé au fait que la plupart des déplacements à vélo se font de jour.
 
-Luminosité : Contrairement à une idée reçue, la majorité écrasante des accidents a lieu en "Plein jour", ce qui est logiquement corrélé au fait que la plupart des déplacements à vélo se font de jour.
+---
 
-© Copyright
+## Copyright
 Nous déclarons sur l’honneur que le code fourni a été produit par nous-mêmes, à l’exception des lignes ci-dessous :
 
-L'utilisation du fichier external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css'] est une pratique standard issue de la documentation officielle de Dash pour l'utilisation de la grille CSS (lignes/colonnes).
-
-Le token Mapbox (pk.eyJ1...) est le token public et gratuit fourni par Plotly dans sa documentation officielle pour permettre l'affichage des fonds de carte (density_mapbox).
+* L'utilisation du fichier `external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']` est une pratique standard issue de la documentation officielle de Dash pour l'utilisation de la grille CSS (lignes/colonnes).
+* Le token Mapbox (`pk.eyJ1...`) est le token public et gratuit fourni par Plotly dans sa documentation officielle pour permettre l'affichage des fonds de carte (`density_mapbox`).
 
 Toute ligne non déclarée ci-dessus est réputée être produite par les auteurs du projet.
