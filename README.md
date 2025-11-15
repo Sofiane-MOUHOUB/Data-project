@@ -1,13 +1,11 @@
-"# Data-project" 
-"# Data-project" 
 
-# 🚴 Dashboard d'Analyse des Accidents de Vélo en France
+#  Dashboard d'Analyse des Accidents de Vélo en France
 
 Ce projet propose un dashboard interactif pour l'analyse des accidents de vélo en France, basé sur les données ouvertes (Open Data) de 2005 à 2023.
 
 L'application est construite en Python en utilisant Dash et Plotly. Elle permet de visualiser l'évolution globale des accidents, puis de filtrer par année pour explorer les points chauds géographiques, la distribution des accidents par largeur de route, leur gravité et la luminosité ambiante.
 
-## 🚀 User Guide
+##  User Guide
 
 Ce guide décrit les étapes pour déployer et lancer l'application dashboard sur une autre machine.
 
@@ -22,41 +20,34 @@ Ce guide décrit les étapes pour déployer et lancer l'application dashboard su
 1.  **Cloner le dépôt :**
     Ouvrez un terminal et clonez le dépôt du projet.
     ```bash
-    git clone [URL_DE_VOTRE_PROJET]
-    cd [NOM_DU_PROJET]
+    git clone https://github.com/Sofiane-MOUHOUB/Data-project.git
+    cd Data-project
     ```
 
-2.  **Créer un environnement virtuel (recommandé) :**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # Sur macOS/Linux
-    .\venv\Scripts\activate   # Sur Windows
-    ```
-
-3.  **Installer les dépendances :**
+2.  **Installer les dépendances :**
     Le fichier `requirements.txt` contient tous les packages nécessaires.
     ```bash
     pip install -r requirements.txt
     ```
 
-4.  **Préparer les données :**
+3.  **Préparer les données :**
     Le dépôt inclut les données brutes. Vous devez exécuter le script de nettoyage une fois pour générer le fichier `accidents_cleaned.csv` qui sera utilisé par le dashboard.
     ```bash
     python src/utils/clean_data.py
     ```
 
-5.  **Lancer le dashboard :**
+4.  **Lancer le dashboard :**
     L'application est lancée via le point d'entrée `main.py`.
     ```bash
     python main.py
     ```
 
-6.  **Accéder à l'application :**
+5.  **Accéder à l'application :**
     Ouvrez votre navigateur et allez à l'adresse indiquée dans le terminal (par défaut : `http://127.0.0.1:8050/`).
 
 ---
 
-## 📊 Data
+##  Data
 
 Le jeu de données utilisé pour ce projet est **"Accidents de Vélo"** (2005-2023).
 
@@ -66,7 +57,7 @@ Il est accessible en Open Data et est maintenu sur la plateforme Koumoul. Le fic
 
 ---
 
-## 💻 Developer Guide
+##  Developer Guide
 
 L'application suit une structure modulaire pour séparer les responsabilités (logique applicative, layout, et interactivité), conformément aux bonnes pratiques de Dash.
 
@@ -115,10 +106,10 @@ Gravité : La très grande majorité des accidents n'entraîne heureusement que 
 Luminosité : Contrairement à une idée reçue, la majorité écrasante des accidents a lieu en "Plein jour", ce qui est logiquement corrélé au fait que la plupart des déplacements à vélo se font de jour.
 
 Copyright
-Je déclare sur l’honneur que le code fourni a été produit par moi-même, à l’exception des lignes ci-dessous :
+Nous déclarons sur l’honneur que le code fourni a été produit par nous-mêmes, à l’exception des lignes ci-dessous :
 
 L'utilisation du fichier external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css'] est une pratique standard issue de la documentation officielle de Dash pour l'utilisation de la grille CSS (lignes/colonnes).
 
 Le token Mapbox (pk.eyJ1...) est le token public et gratuit fourni par Plotly dans sa documentation officielle pour permettre l'affichage des fonds de carte (density_mapbox).
 
-Toute ligne non déclarée ci-dessus est réputée être produite par l'auteur du projet.
+Toute ligne non déclarée ci-dessus est réputée être produite par les auteurs du projet.

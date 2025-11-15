@@ -33,22 +33,18 @@ coverage/
 htmlcov/
 
 # === DATA ===
-# On ignore les dossiers de données (y compris sous-dossiers)
-data/raw/
-data/cleaned/
+# Ignorer le contenu des dossiers de données...
+data/raw/*
+data/cleaned/*
 
-# Garder les fichiers CSV nécessaires à l’exécution locale
+# ... SAUF les fichiers dont on a besoin.
 !data/raw/accidentsVelo-full.csv
-!data/cleaned/cleaneddata.csv
+!data/cleaned/accidents_cleaned.csv  
 
-# === DASH / PLOTLY ===
-*.json
-*.html
 
 # === AUTRES ===
-video.mp4
 images/*
-!images/README_preview.png  # garde une image pour le README si besoin
+!images/README_preview.png
 
 # === BACKUP ET DIVERS ===
 *.zip

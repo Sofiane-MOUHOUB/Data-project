@@ -3,7 +3,6 @@ import os
 # --- Configuration des chemins ---
 
 # On calcule le chemin absolu de la racine du projet
-# (On est dans src/utils/, donc on remonte de 3 niveaux)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # On définit le chemin complet où le fichier DEVRAIT être
