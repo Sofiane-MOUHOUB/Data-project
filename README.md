@@ -1,11 +1,10 @@
-
-#  Dashboard d'Analyse des Accidents de Vélo en France
+# 🚴 Dashboard d'Analyse des Accidents de Vélo en France
 
 Ce projet propose un dashboard interactif pour l'analyse des accidents de vélo en France, basé sur les données ouvertes (Open Data) de 2005 à 2023.
 
 L'application est construite en Python en utilisant Dash et Plotly. Elle permet de visualiser l'évolution globale des accidents, puis de filtrer par année pour explorer les points chauds géographiques, la distribution des accidents par largeur de route, leur gravité et la luminosité ambiante.
 
-##  User Guide
+## 🚀 User Guide
 
 Ce guide décrit les étapes pour déployer et lancer l'application dashboard sur une autre machine.
 
@@ -47,7 +46,7 @@ Ce guide décrit les étapes pour déployer et lancer l'application dashboard su
 
 ---
 
-##  Data
+## 📊 Data
 
 Le jeu de données utilisé pour ce projet est **"Accidents de Vélo"** (2005-2023).
 
@@ -57,7 +56,7 @@ Il est accessible en Open Data et est maintenu sur la plateforme Koumoul. Le fic
 
 ---
 
-##  Developer Guide
+## 💻 Developer Guide
 
 L'application suit une structure modulaire pour séparer les responsabilités (logique applicative, layout, et interactivité), conformément aux bonnes pratiques de Dash.
 
@@ -71,21 +70,23 @@ Le point d'entrée est `main.py`, qui se contente d'importer et de lancer l'appl
 * `src/utils/` : Contient les scripts pour la vérification (`get_data.py`) et le nettoyage (`clean_data.py`) des données. Le script de nettoyage est crucial car il convertit les codes (ex: `grav = 1.0`) en labels lisibles (ex: "Indemne") et prépare la variable `larrout` pour l'histogramme.
 
 ### Diagramme d'architecture (Mermaid)
+
 ```mermaid
 graph TD
-A[main.py] --> B(src/dashboard/app.py)
-A --> C(src/dashboard/layout.py)
-A --> D(src/dashboard/callbacks.py)
+    A[main.py] --> B(src/dashboard/app.py)
+    A --> C(src/dashboard/layout.py)
+    A --> D(src/dashboard/callbacks.py)
+    
+    C -- Importe app, fig_total --> B
+    D -- Importe app, df --> B
+    
+    B -- Charge --> E(data/cleaned/accidents_cleaned.csv)
+    F(src/utils/clean_data.py) -- Génère --> E
+    F -- Lit --> G(data/raw/accidentsVelo-full.csv)
 
-C -- Importe app, fig_total --> B
-D -- Importe app, df --> B
 
-B -- Charge --> E(data/cleaned/accidents_cleaned.csv) 
-F(src/utils/clean_data.py) -- Génère --> E
-F -- Lit --> G(data/raw/accidentsVelo-full.csv)
+Rapport d'analyse
 
-
-### Rapport d'analyse
 Ce dashboard a permis d'extraire plusieurs conclusions clés sur les accidents de vélo en France (période 2010-2023).
 
 1. Avertissement sur les données (2018-2019)
@@ -104,7 +105,7 @@ Gravité : La très grande majorité des accidents n'entraîne heureusement que 
 
 Luminosité : Contrairement à une idée reçue, la majorité écrasante des accidents a lieu en "Plein jour", ce qui est logiquement corrélé au fait que la plupart des déplacements à vélo se font de jour.
 
-Copyright
+© Copyright
 Nous déclarons sur l’honneur que le code fourni a été produit par nous-mêmes, à l’exception des lignes ci-dessous :
 
 L'utilisation du fichier external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css'] est une pratique standard issue de la documentation officielle de Dash pour l'utilisation de la grille CSS (lignes/colonnes).
