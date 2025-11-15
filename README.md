@@ -83,8 +83,8 @@ La carte de chaleur (density_mapbox) montre que la densité d'accidents est la p
 ### 3. Analyse de la largeur de route (Histogramme)
 L'histogramme (variable larrout) montre une distribution claire : la grande majorité des accidents se produit sur des routes d'une largeur "standard" (entre 3 et 7 mètres), ce qui correspond aux routes départementales, communales ou aux rues urbaines.
 
-### 4. Gravité et Luminosité (Treemaps)
-L'analyse des proportions (via les Treemaps) révèle deux faits majeurs :
+### 44. Gravité et Luminosité (Camemberts)
+L'analyse des proportions (via les graphiques en secteurs, ou "camemberts") révèle deux faits majeurs :
 
 * **Gravité :** La très grande majorité des accidents n'entraîne heureusement que des "Blessés Légers". Les "Tués" (environ 1-2%) et "Blessés Graves" (environ 15-20%) représentent une part minoritaire mais très sérieuse des incidents.
 * **Luminosité :** Contrairement à une idée reçue, la majorité écrasante des accidents a lieu en "Plein jour", ce qui est logiquement corrélé au fait que la plupart des déplacements à vélo se font de jour.
