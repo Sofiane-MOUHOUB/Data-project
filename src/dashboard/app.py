@@ -72,6 +72,11 @@ CLEANED_DATA_PATH = os.path.join(BASE_DIR, 'data', 'cleaned', 'accidents_cleaned
 # Charge les données au démarrage de l'app
 df = load_and_prepare_data(CLEANED_DATA_PATH)
 
+# Filtre le DataFrame pour exclure les années problématiques (ex: 2009)
+# L'analyse commencera à partir de 2010 pour assurer la cohérence des données.
+df = df[df['year'] >= 2010].copy()
+print(f"Filtrage des années appliqué. Début de l'analyse : {df['year'].min()}")
+
 
 # --- 3. Création des figures statiques ---
 
@@ -88,12 +93,12 @@ def create_static_figures(data: pd.DataFrame) -> Any:
     # Agrégation des données par année
     df_accidents_par_an = data.groupby('year').size().reset_index(name='count')
     
-    # Création d'un graphique en ligne avec des marqueurs et des lignes lissées
+    # Crée un graphique en ligne pour montrer la tendance
     fig = px.line(
         df_accidents_par_an,
         x='year',
         y='count',
-        title="Évolution du nombre total d'accidents de vélo par an",
+        title="Évolution du nombre total d'accidents de vélo (depuis 2010)",
         markers=True,        # Affiche un marqueur pour chaque année
         line_shape='spline'  # Applique un lissage de type 'spline'
     )
